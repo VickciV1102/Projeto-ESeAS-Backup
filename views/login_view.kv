@@ -1,0 +1,93 @@
+# Define o estilo para a classe LoginScreen que criamos em Python.
+<LoginScreenController>:
+    # IDs são usados para referenciar widgets no código Python (self.ids.login_input)
+    # ou dentro do próprio arquivo .kv.
+    id: login_screen
+
+    # Define um fundo cinza claro para a tela inteira, como no protótipo.
+    canvas.before:
+        Color:
+            rgba: (230/255, 230/255, 230/255, 1) # Cor (R, G, B, A)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    # FloatLayout permite posicionar widgets em coordenadas relativas,
+    # ideal para centralizar um único elemento.
+    FloatLayout:
+
+        # BoxLayout organiza os widgets filhos verticalmente.
+        # Este é o container branco e centralizado.
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 25  # Espaço vertical entre os widgets
+            padding: 40  # Espaço interno do container
+            size_hint: None, None  # Desabilita o ajuste automático de tamanho
+            size: 380, 480         # Define um tamanho fixo para o container
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5} # Centraliza o box na tela
+
+            # Adiciona um "fundo" branco com cantos arredondados ao BoxLayout
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1 # Cor branca
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15,] # Raio de 15 pixels para todos os cantos
+
+            Image:
+                source: 'assets/images/logo_macaw.png' # Caminho para o seu logo
+                size_hint_y: None
+                height: 100
+                allow_stretch: True
+
+            Label:
+                # Espaço em branco para empurrar os elementos para baixo
+                size_hint_y: None
+                height: 20
+
+            TextInput:
+                id: login_input
+                hint_text: 'Login'
+                multiline: False
+                size_hint_y: None
+                height: 45
+                font_size: '16sp'
+                padding: [10, 10]
+                background_color: (1, 1, 1, 0) # Fundo transparente
+                # Adiciona uma borda ao TextInput
+                canvas.after:
+                    Color:
+                        rgba: (0.7, 0.7, 0.7, 1)
+                    Line:
+                        width: 1.2
+                        rectangle: self.x, self.y, self.width, self.height
+
+            TextInput:
+                id: password_input
+                hint_text: 'Senha'
+                multiline: False
+                password: True # Esconde o texto da senha
+                size_hint_y: None
+                height: 45
+                font_size: '16sp'
+                padding: [10, 10]
+                background_color: (1, 1, 1, 0)
+                canvas.after:
+                    Color:
+                        rgba: (0.7, 0.7, 0.7, 1)
+                    Line:
+                        width: 1.2
+                        rectangle: self.x, self.y, self.width, self.height
+
+            Button:
+                text: 'Next'
+                size_hint_y: None
+                height: 50
+                font_size: '18sp'
+                background_color: (34/255, 102/255, 204/255, 1) # Cor azul do protótipo
+                background_normal: '' # Necessário para a cor de fundo funcionar corretamente
+
+                # Ao ser pressionado, chama o método do_login() da classe LoginScreen,
+                # passando o texto dos campos de login e senha como argumentos.
+                on_press: root.do_login(login_input.text, password_input.text)

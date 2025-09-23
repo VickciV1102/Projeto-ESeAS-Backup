@@ -1,0 +1,123 @@
+#:kivy 2.3.0
+
+<BackupScreen@Screen>:
+    name: "backup_start_screen"
+    BoxLayout:
+        orientation: "vertical"
+        padding: [32, 32, 32, 48]
+        spacing: 18
+
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: 48
+            size_hint_y: 0.86
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.56
+                spacing: 18
+
+                BoxLayout:
+                    orientation: "horizontal"
+                    spacing: 12
+                    size_hint_y: None
+                    height: 50
+
+                    Image:
+                        source: "assets/images/img_desktop_source.png"
+                        allow_stretch: True
+                        size_hint_x: None
+                        width: 96
+                    TextInput:
+                        id: source_path_input
+                        text: ""
+                        hint_text: "Source Path \\nome-maquina\\c$"
+                        multiline: False
+                        font_size: 16
+                    Button:
+                        text: "Selecionar"
+                        size_hint_x: None
+                        width: 120
+                        on_press: root.open_source_dialog()
+
+                Widget:
+                    size_hint_y: 0.2
+
+                BoxLayout:
+                    orientation: "horizontal"
+                    spacing: 12
+                    size_hint_y: None
+                    height: 50
+
+                    Image:
+                        source: "assets/images/img_desktop_destination.png"
+                        allow_stretch: True
+                        size_hint_x: None
+                        width: 96
+                    TextInput:
+                        id: destination_path_input
+                        text: ""
+                        hint_text: "Destination Path \\nome-maquina\\c$"
+                        multiline: False
+                        font_size: 16
+                    Button:
+                        text: "Selecionar"
+                        size_hint_x: None
+                        width: 120
+                        on_press: root.open_destination_dialog()
+
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 8
+                size_hint_x: 0.44
+
+                Label:
+                    text: "Log de Execução (Checklist)"
+                    font_size: 20
+                    color: .18, .18, .22, 1
+                    halign: 'center'
+                Widget:
+                    size_hint_y: 0.05
+                Label:
+                    text: "✓ Conexão com servidor de origem estabelecida"
+                    font_size: 16
+                    color: .11, .55, .27, 1
+                    halign: 'left'
+                Label:
+                    text: "✓ Diretório de origem acessível"
+                    font_size: 16
+                    color: .11, .55, .27, 1
+                    halign: 'left'
+                Label:
+                    text: "✓ Conexão com servidor de destino estabelecida"
+                    font_size: 16
+                    color: .11, .55, .27, 1
+                    halign: 'left'
+                Label:
+                    text: "✓ Diretório de destino acessível"
+                    font_size: 16
+                    color: .11, .55, .27, 1
+                    halign: 'left'
+                Widget:
+                    size_hint_y: 0.05
+                Label:
+                    text: "Concluída"
+                    font_size: 15
+                    color: .5, .5, .5, 1
+                    halign: 'center'
+
+        Widget:
+            size_hint_y: None
+            height: 12
+
+        Button:
+            text: "Iniciar Transferência"
+            size_hint_y: None
+            height: 56
+            font_size: 18
+            background_color: 0.1, 0.5, 0.9, 1
+            color: 1, 1, 1, 1
+            pos_hint: {'center_x': 0.5}
+            background_normal: ''
+            background_down: ''
+            on_press: root.start_backup()

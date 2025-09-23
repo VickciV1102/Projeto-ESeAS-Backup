@@ -124,3 +124,10 @@ class BackupFacade(BackupSubject):
             "progress": self.backup_progress,
             "current_operation": self.current_operation
         }
+    
+    def executefullbackup(self, userid: int, backupconfig: dict):
+        origem_nome = backupconfig.get('origem_nome')
+        origem_caminho = backupconfig.get('origem_caminho')
+        destino_nome = backupconfig.get('destino_nome')
+        destino_caminho = backupconfig.get('destino_caminho')
+        # Adicione as operações de backup usando esses dados...

@@ -25,7 +25,7 @@ class LoginScreenController(Screen):
             password_match = user.password == password
 
             if password_match:
-                self.manager.current = 'backup_setup'
+                self.manager.current = 'backup_start_screen'
 
     def on_enter(self, *args):
         self.ids.login_input.focus = True

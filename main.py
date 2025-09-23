@@ -8,6 +8,7 @@ from controllers.app_mig_setup_controller import AppMigSetupScreenController
 from controllers.backup_setup_controller import BackupSetupScreenController
 from controllers.finish_migration_controller import FinishMigrationScreenController
 from controllers.login_controller import (LoginScreenController, AdminUserInit)
+from controllers.backup_controller import BackupScreen
 
 from db import db_conn
 
@@ -28,7 +29,8 @@ class MainApp(App):
 
         sm = ScreenManager()
         sm.add_widget(LoginScreenController(name='login'))
-        sm.add_widget(BackupSetupScreenController(name='backup_setup'))
+        #sm.add_widget(BackupSetupScreenController(name='backup_setup'))
+        sm.add_widget(BackupScreen(name='backup_start_screen'))
         sm.add_widget(FinishMigrationScreenController(name='finish_migration'))
         sm.add_widget(AppMigSetupScreenController(name='app_mig_setup'))
         return sm

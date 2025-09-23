@@ -1,8 +1,8 @@
 import time
 
 from typing import Dict, List
-from log_manager import get_log_manager
-from backup_observer import BackupSubject
+from .log_manager import get_log_manager
+from .backup_observer import BackupSubject
 
 class BackupFacade(BackupSubject):
     

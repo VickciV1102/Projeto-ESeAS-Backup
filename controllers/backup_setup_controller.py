@@ -4,6 +4,9 @@ from kivy.core.window import Window
 
 from models.users_model import UserModel
 from utils import backup_facade
+from utils.log_manager import get_log_manager
+from utils.backup_facade import BackupFacade
+from utils.backup_observer import LogBackupObserver
 
 Builder.load_file('views/backup_setup_view.kv')
 

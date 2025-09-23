@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
-from log_manager import get_log_manager
+from .log_manager import get_log_manager
 
 class BackupObserver(ABC):
     

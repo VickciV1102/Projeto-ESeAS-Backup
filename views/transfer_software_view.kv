@@ -1,0 +1,116 @@
+#:kivy 2.3.0
+
+<TransferSoftwareScreen>:
+    name: "transfer_software_screen"
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [20, 20, 20, 20]
+        spacing: 15
+
+        # Container principal branco com cantos arredondados
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [30, 30, 30, 30]
+            spacing: 15
+
+            # Título
+            Label:
+                text: 'Transfer Software'
+                font_size: 28
+                color: 0.2, 0.2, 0.2, 1
+                size_hint_y: None
+                height: 50
+                halign: 'left'
+                text_size: self.size
+
+            # Container da lista com fundo azul claro
+            BoxLayout:
+                orientation: 'vertical'
+                padding: [15, 15, 15, 15]
+                spacing: 10
+                
+                canvas.before:
+                    Color:
+                        rgba: 0.95, 0.97, 1, 1  # Azul muito claro
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [8]
+
+                # Cabeçalho da lista
+                BoxLayout:
+                    size_hint_y: None
+                    height: 50
+                    spacing: 10
+                    padding: [5, 0, 15, 0]
+
+                    CheckBox:
+                        id: select_all
+                        size_hint_x: None
+                        width: 30
+                        on_active: root.select_all_software(self.active)
+
+                    Label:
+                        text: 'Select all'
+                        color: 0.3, 0.3, 0.3, 1
+                        text_size: self.size
+                        halign: 'left'
+                        valign: 'center'
+                        size_hint_x: 0.7
+                        font_size: 16
+
+                    Label:
+                        text: 'Compatict'
+                        color: 0.3, 0.3, 0.3, 1
+                        text_size: self.size
+                        halign: 'right'
+                        valign: 'center'
+                        size_hint_x: 0.3
+                        font_size: 16
+
+                # Lista de software
+                ScrollView:
+                    do_scroll_x: False
+                    size_hint_y: None
+                    height: 400
+                    bar_width: 10
+                    bar_color: 0.7, 0.7, 0.7, 0.9
+                    bar_inactive_color: 0.7, 0.7, 0.7, 0.4
+                    scroll_type: ['bars', 'content']
+
+                    BoxLayout:
+                        id: software_list
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: 8
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 50
+            spacing: 10
+
+            Widget:
+                size_hint_x: 0.7
+
+            Button:
+                text: 'Previous'
+                size_hint: None, None
+                size: 120, 45
+                on_press: root.go_back()
+
+            Button:
+                text: 'Next'
+                size_hint: None, None
+                size: 120, 45
+                background_normal: ''
+                background_color: (0.09, 0.49, 0.85, 1)
+                on_press: root.proceed_next()

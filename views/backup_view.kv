@@ -3,121 +3,386 @@
 <BackupScreen@Screen>:
     name: "backup_start_screen"
     BoxLayout:
-        orientation: "vertical"
-        padding: [32, 32, 32, 48]
-        spacing: 18
+        orientation: 'vertical'
+        padding: [28, 18, 28, 28]
+        spacing: 12
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
 
         BoxLayout:
-            orientation: "horizontal"
-            spacing: 48
+            orientation: 'horizontal'
+            spacing: 20
             size_hint_y: 0.86
 
+            # Left column: two laptop blocks with rounded info pills and dotted connector
             BoxLayout:
-                orientation: "vertical"
+                orientation: 'horizontal'
                 size_hint_x: 0.56
-                spacing: 18
+                padding: [8, 8, 8, 8]
 
                 BoxLayout:
-                    orientation: "horizontal"
-                    spacing: 12
-                    size_hint_y: None
-                    height: 50
+                    orientation: 'vertical'
+                    spacing: 18
 
-                    Image:
-                        source: "assets/images/img_desktop_source.png"
-                        allow_stretch: True
-                        size_hint_x: None
-                        width: 96
-                    TextInput:
-                        id: source_path_input
-                        text: ""
-                        hint_text: "Source Path \\nome-maquina\\c$"
-                        multiline: False
-                        font_size: 16
-                    Button:
-                        text: "Selecionar"
-                        size_hint_x: None
-                        width: 120
-                        on_press: root.open_source_dialog()
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 12
+                        size_hint_y: None
+                        height: 140
 
-                Widget:
-                    size_hint_y: 0.2
+                        Image:
+                            source: 'assets/images/img_desktop_source.png'
+                            size_hint: None, None
+                            size: 120, 120
+                            allow_stretch: True
 
-                BoxLayout:
-                    orientation: "horizontal"
-                    spacing: 12
-                    size_hint_y: None
-                    height: 50
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 8
+                            padding: [6, 6, 6, 6]
 
-                    Image:
-                        source: "assets/images/img_desktop_destination.png"
-                        allow_stretch: True
-                        size_hint_x: None
-                        width: 96
-                    TextInput:
-                        id: destination_path_input
-                        text: ""
-                        hint_text: "Destination Path \\nome-maquina\\c$"
-                        multiline: False
-                        font_size: 16
-                    Button:
-                        text: "Selecionar"
-                        size_hint_x: None
-                        width: 120
-                        on_press: root.open_destination_dialog()
+                            Label:
+                                text: 'Hostname Origem: DESKTOP-XXXX'
+                                size_hint_y: None
+                                height: 36
+                                font_size: 14
+                                color: .12, .12, .12, 1
+                                halign: 'left'
+                                valign: 'middle'
+                                text_size: self.size
+                                canvas.before:
+                                    Color:
+                                        rgba: .95, .95, .95, 1
+                                    RoundedRectangle:
+                                        pos: self.x - 6, self.y
+                                        size: self.width + 12, self.height
+                                        radius: [18]
 
+                            # input row under the source laptop
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                spacing: 8
+                                size_hint_y: None
+                                height: 40
+
+                                TextInput:
+                                    id: source_path_input
+                                    text: ''
+                                    hint_text: "Source Path \\nome-maquina\\c$"
+                                    multiline: False
+                                    font_size: 14
+                                Button:
+                                    text: 'Selecionar'
+                                    size_hint_x: None
+                                    width: 110
+                                    on_press: root.open_source_dialog()
+
+                    # dotted connector (multiple small ellipses)
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: 120
+                        padding: [46, 0, 0, 0]
+                        canvas:
+                            Color:
+                                rgba: .4, .7, .95, 1
+                            Ellipse:
+                                pos: self.x + 44, self.y + 100
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 86
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 72
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 58
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 44
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 30
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 16
+                                size: 6, 6
+                            Ellipse:
+                                pos: self.x + 44, self.y + 2
+                                size: 6, 6
+
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 12
+                        size_hint_y: None
+                        height: 140
+
+                        Image:
+                            source: 'assets/images/img_desktop_destination.png'
+                            size_hint: None, None
+                            size: 120, 120
+                            allow_stretch: True
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 8
+                            padding: [6, 6, 6, 6]
+
+                            Label:
+                                text: 'Hostname Destino: DESKTOP-YYYY'
+                                size_hint_y: None
+                                height: 36
+                                font_size: 14
+                                color: .12, .12, .12, 1
+                                halign: 'left'
+                                valign: 'middle'
+                                text_size: self.size
+                                canvas.before:
+                                    Color:
+                                        rgba: .95, .95, .95, 1
+                                    RoundedRectangle:
+                                        pos: self.x - 6, self.y
+                                        size: self.width + 12, self.height
+                                        radius: [18]
+
+                            # input row under the destination laptop
+                            BoxLayout:
+                                orientation: 'horizontal'
+                                spacing: 8
+                                size_hint_y: None
+                                height: 40
+
+                                TextInput:
+                                    id: destination_path_input
+                                    text: ''
+                                    hint_text: "Destination Path \\nome-maquina\\c$"
+                                    multiline: False
+                                    font_size: 14
+                                Button:
+                                    text: 'Selecionar'
+                                    size_hint_x: None
+                                    width: 110
+                                    on_press: root.open_destination_dialog()
+                                    
+            # center thin blue divider
+            BoxLayout:
+                size_hint_x: None
+                width: 18
+                padding: [0, 10]
+                canvas:
+                    Color:
+                        rgba: .09, .49, .85, 1
+                    RoundedRectangle:
+                        pos: self.x + 5, self.y + 6
+                        size: 8, self.height - 12
+                        radius: [10]
+
+            # Right column: checklist and CTA
             BoxLayout:
                 orientation: 'vertical'
-                spacing: 8
                 size_hint_x: 0.44
+                padding: [8, 8, 8, 8]
+                spacing: 8
 
                 Label:
-                    text: "Log de Execução (Checklist)"
+                    text: 'Log de Execução (Checklist)'
                     font_size: 20
-                    color: .18, .18, .22, 1
+                    color: .12, .12, .14, 1
+                    size_hint_y: None
+                    height: 36
                     halign: 'center'
+                    text_size: self.size
+
                 Widget:
-                    size_hint_y: 0.05
-                Label:
-                    text: "✓ Conexão com servidor de origem estabelecida"
-                    font_size: 16
-                    color: .11, .55, .27, 1
-                    halign: 'left'
-                Label:
-                    text: "✓ Diretório de origem acessível"
-                    font_size: 16
-                    color: .11, .55, .27, 1
-                    halign: 'left'
-                Label:
-                    text: "✓ Conexão com servidor de destino estabelecida"
-                    font_size: 16
-                    color: .11, .55, .27, 1
-                    halign: 'left'
-                Label:
-                    text: "✓ Diretório de destino acessível"
-                    font_size: 16
-                    color: .11, .55, .27, 1
-                    halign: 'left'
+                    size_hint_y: None
+                    height: 8
+
+                ScrollView:
+                    do_scroll_x: False  # Permite apenas rolagem vertical
+                    size_hint_y: 1.5  # Define a altura como 70% do espaço disponível
+                    BoxLayout:
+                        orientation: 'vertical'
+                        spacing: 6
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                        Label:
+                            id: init_status
+                            text: 'Aguardando início do backup...'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: connectivity_status
+                            text: 'Verificando conectividade...'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: env_ready_status
+                            text: 'Ambiente não verificado'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: source_path_status
+                            text: 'Pasta de origem: Não selecionada'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: dest_path_status
+                            text: 'Pasta de destino: Não selecionada'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: files_count_status
+                            text: 'Total de arquivos: Calculando...'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: copy_status
+                            text: 'Aguardando início da cópia...'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: progress_status
+                            text: 'Progresso: 0%'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: validation_status
+                            text: 'Validação pendente'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: finish_status
+                            text: ''
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: error_status
+                            text: ''
+                            font_size: 16
+                            color: 1, .2, .2, 1
+                            halign: 'left'
+                            valign: 'middle'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: self.texture_size[1] + 10
+                            markup: True
+                            height: 28
+
                 Widget:
-                    size_hint_y: 0.05
+                    size_hint_y: 1
+
                 Label:
-                    text: "Concluída"
-                    font_size: 15
-                    color: .5, .5, .5, 1
+                    text: 'Concluída'
+                    font_size: 14
+                    color: .6, .6, .6, 1
                     halign: 'center'
+                    size_hint_y: None
+                    height: 22
+                    text_size: self.size
 
-        Widget:
+        # bottom area with styled CTA button aligned to right
+        BoxLayout:
+            orientation: 'horizontal'
             size_hint_y: None
-            height: 12
+            height: 72
+            padding: [10, 0, 10, 4]
 
-        Button:
-            text: "Iniciar Transferência"
-            size_hint_y: None
-            height: 56
-            font_size: 18
-            background_color: 0.1, 0.5, 0.9, 1
-            color: 1, 1, 1, 1
-            pos_hint: {'center_x': 0.5}
-            background_normal: ''
-            background_down: ''
-            on_press: root.start_backup()
+            BoxLayout:
+                spacing: 10
+                
+                Widget:
+                    size_hint_x: 0.6
+                
+                Button:
+                    text: 'Iniciar Transferência'
+                    size_hint: None, None
+                    size: 200, 52
+                    font_size: 16
+                    background_normal: ''
+                    background_down: ''
+                    background_color: 0, 0, 0, 0
+                    color: 1, 1, 1, 1
+                    on_press: root.start_backup()
+                    canvas.before:
+                        Color:
+                            rgba: .09, .49, .85, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            
+                Button:
+                    id: next_button
+                    text: 'Next'
+                    size_hint: None, None
+                    size: 120, 52
+                    font_size: 16
+                    background_normal: ''
+                    background_down: ''
+                    background_color: 0, 0, 0, 0
+                    color: 1, 1, 1, 1
+                    disabled: True
+                    opacity: 0.5 if self.disabled else 1
+                    on_press: root.go_to_software_selection()
+                    canvas.before:
+                        Color:
+                            rgba: (.09, .49, .85, 1) if not self.disabled else (.5, .5, .5, 1)
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [26]
+                            on_press: root.start_backup()

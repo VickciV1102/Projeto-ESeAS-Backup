@@ -1,6 +1,6 @@
 import time
-
-from typing import Dict, List
+import os
+from typing import Dict, List, Tuple
 from .log_manager import get_log_manager
 from .backup_observer import BackupSubject
 
@@ -12,6 +12,48 @@ class BackupFacade(BackupSubject):
         self.backup_progress = 0
         self.current_operation = ""
         self.is_backup_running = False
+        
+    def _check_connectivity(self, backup_config: Dict) -> bool:
+        """Verifica conectividade e permissões dos diretórios"""
+        try:
+            source_path = backup_config.get('source_path')
+            dest_path = backup_config.get('destination_path')
+            
+            # Verificar se os caminhos existem
+            if not os.path.exists(source_path):
+                raise ValueError("Caminho de origem não existe")
+            if not os.path.exists(dest_path):
+                os.makedirs(dest_path)
+                
+            # Verificar permissões
+            test_file = os.path.join(dest_path, '.test')
+            try:
+                with open(test_file, 'w') as f:
+                    f.write('test')
+                os.remove(test_file)
+            except Exception:
+                raise ValueError("Sem permissão de escrita no destino")
+                
+            return True
+        except Exception as e:
+            self._notify_observers("error", {
+                "error_type": "auth_error",
+                "message": str(e)
+            })
+            return False
+
+    def _count_files(self, path: str) -> tuple:
+        """Conta arquivos e calcula tamanho total"""
+        total_files = 0
+        total_size = 0
+        for root, _, files in os.walk(path):
+            total_files += len(files)
+            for name in files:
+                try:
+                    total_size += os.path.getsize(os.path.join(root, name))
+                except OSError:
+                    continue
+        return total_files, total_size
     
     def execute_full_backup(self, user_id: int, backup_config: Dict) -> bool:
         try:
@@ -19,28 +61,97 @@ class BackupFacade(BackupSubject):
             self.backup_progress = 0
             start_time = time.time()
             
-            self._notify_observers("backup_started", {"progress": 0, "message": "Iniciando backup..."})
+            # Notificar início do backup
+            self._notify_observers("backup_started", {"progress": 0})
             
-            # Etapa 1: Validar configurações
-            if not self._validate_backup_config(backup_config):
-                raise ValueError("Configurações de backup inválidas")
-            self._update_progress(20, "Configurações validadas")
+            # Etapa 1: Verificar conectividade e permissões
+            self._notify_observers("checking_connectivity", {})
+            if not self._check_connectivity(backup_config):
+                raise ValueError("Erro de conectividade ou permissões")
+                
+            # Notificar ambiente pronto
+            self._notify_observers("environment_ready", {})
             
-            # Etapa 2: Preparar diretórios
-            self._prepare_backup_directories(backup_config)
-            self._update_progress(40, "Diretórios preparados")
+            # Etapa 2: Contagem de arquivos e tamanho total
+            source_path = backup_config.get('source_path')
+            total_files, total_size = self._count_files(source_path)
+            self._notify_observers("counting_files", {
+                "total_files": total_files,
+                "total_size": total_size / (1024 * 1024 * 1024)  # Converter para GB
+            })
             
-            # Etapa 3: Backup de arquivos do usuário
-            self._backup_user_files(backup_config.get('source_paths', []), backup_config.get('destination_path'))
-            self._update_progress(60, "Arquivos de usuário copiados")
+            # Etapa 3: Iniciar cópia
+            self._notify_observers("copying_files", {})
+            files_copied = 0
             
-            # Etapa 4: Finalizar
-            self._finalize_backup(backup_config.get('destination_path'))
-            self._update_progress(80, "Backup realizado com sucesso!")
+            for root, _, files in os.walk(source_path):
+                for file in files:
+                    source_file = os.path.join(root, file)
+                    rel_path = os.path.relpath(source_file, source_path)
+                    dest_file = os.path.join(backup_config['destination_path'], rel_path)
+                    
+                    # Criar diretório de destino se não existir
+                    os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+                    
+                    # Copiar arquivo
+                    try:
+                        with open(source_file, 'rb') as src, open(dest_file, 'wb') as dst:
+                            dst.write(src.read())
+                    except Exception as e:
+                        self._notify_observers("error", {
+                            "error_type": "inaccessible_file",
+                            "message": f"Erro ao copiar {source_file}: {str(e)}"
+                        })
+                        continue
+                    
+                    files_copied += 1
+                    progress = int((files_copied / total_files) * 100)
+                    
+                    self._notify_observers("progress_update", {
+                        "progress": progress,
+                        "files_copied": files_copied,
+                        "total_files": total_files
+                    })
             
-            # Etapa 5: Registrar backup no banco de dados
-            self._register_backup_in_database(user_id, "Full Backup", duration)
-            self._update_progress(100, "Backup registrado no banco de dados com sucesso!")
+            # Etapa 4: Validar os arquivos copiados
+            self._notify_observers("validating", {})
+            validation_errors = self._validate_backup(source_path, backup_config['destination_path'])
+            
+            if validation_errors:
+                self._notify_observers("error", {
+                    "error_type": "validation_failed",
+                    "message": f"Erros na validação: {', '.join(validation_errors)}"
+                })
+                return False
+
+            # Etapa 5: Finalizar e registrar no histórico
+            duration = time.time() - start_time
+            self._notify_observers("backup_completed", {
+                "duration": duration,
+                "total_files": total_files,
+                "total_size": total_size
+            })
+            
+            # Log no banco de dados
+            self.log_manager.log_backup_complete(user_id, "Full Backup", duration)
+            
+            return True
+        except Exception as e:
+            error_type = "unknown"
+            if "conectividade" in str(e):
+                error_type = "connection_lost"
+            elif "permissões" in str(e):
+                error_type = "auth_error"
+            elif "espaço" in str(e):
+                error_type = "insufficient_space"
+            
+            self._notify_observers("error", {
+                "error_type": error_type,
+                "message": str(e)
+            })
+            return False
+        finally:
+            self.is_backup_running = False
 
             duration = time.time() - start_time
             self.log_manager.log_backup_complete(user_id, "Full Backup", duration)
@@ -52,17 +163,6 @@ class BackupFacade(BackupSubject):
             })
 
             return True
-            
-        except Exception as e:
-            self._notify_observers("backup_error", {
-                "progress": self.backup_progress,
-                "message": f"Erro durante o backup: {str(e)}",
-                "error": str(e)
-            })
-
-            return False
-        finally:
-            self.is_backup_running = False
     
     def execute_quick_backup(self, user_id: int, source_paths: List[str], destination_path: str) -> bool:
         try:
@@ -86,15 +186,43 @@ class BackupFacade(BackupSubject):
             
         except Exception as e:
             self.log_manager.log_backup_error(user_id, "Quick Backup", str(e))
-            self._notify_observers("backup_error", {
-                "progress": self.backup_progress,
-                "message": f"Erro durante o backup: {str(e)}",
-                "error": str(e)
+            self._notify_observers("error", {
+                "error_type": "unknown",
+                "message": f"Erro durante o backup: {str(e)}"
             })
             return False
         finally:
             self.is_backup_running = False
     
+    def _validate_backup(self, source_path: str, dest_path: str) -> List[str]:
+        """Valida se todos os arquivos foram copiados corretamente"""
+        errors = []
+        
+        # Percorre todos os arquivos na origem
+        for root, _, files in os.walk(source_path):
+            for file in files:
+                source_file = os.path.join(root, file)
+                # Calcula o caminho relativo e reconstrói no destino
+                rel_path = os.path.relpath(source_file, source_path)
+                dest_file = os.path.join(dest_path, rel_path)
+                
+                # Verifica se o arquivo existe no destino
+                if not os.path.exists(dest_file):
+                    errors.append(f"Arquivo não encontrado no destino: {rel_path}")
+                    continue
+                
+                # Verifica o tamanho dos arquivos
+                try:
+                    source_size = os.path.getsize(source_file)
+                    dest_size = os.path.getsize(dest_file)
+                    
+                    if source_size != dest_size:
+                        errors.append(f"Tamanho diferente para o arquivo: {rel_path}")
+                except OSError as e:
+                    errors.append(f"Erro ao verificar arquivo {rel_path}: {str(e)}")
+        
+        return errors
+
     def _validate_backup_config(self, config: Dict) -> bool:
         pass
     

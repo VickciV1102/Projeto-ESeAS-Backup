@@ -9,6 +9,7 @@
         canvas.before:
             Color:
                 rgba: 1, 1, 1, 1
+
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -202,13 +203,33 @@
                     height: 8
 
                 ScrollView:
-                    do_scroll_x: False  # Permite apenas rolagem vertical
-                    size_hint_y: 1.5  # Define a altura como 70% do espaço disponível
+                    do_scroll_x: False
+                    size_hint_y: 4.5
                     BoxLayout:
                         orientation: 'vertical'
                         spacing: 6
                         size_hint_y: None
                         height: self.minimum_height
+
+                        Label:
+                            id: source_path_status
+                            text: 'Pasta de origem: Não selecionada'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
+
+                        Label:
+                            id: dest_path_status
+                            text: 'Pasta de destino: Não selecionada'
+                            font_size: 16
+                            color: .6, .6, .6, 1
+                            halign: 'left'
+                            text_size: self.size
+                            size_hint_y: None
+                            height: 28
 
                         Label:
                             id: init_status
@@ -233,26 +254,6 @@
                         Label:
                             id: env_ready_status
                             text: 'Ambiente não verificado'
-                            font_size: 16
-                            color: .6, .6, .6, 1
-                            halign: 'left'
-                            text_size: self.size
-                            size_hint_y: None
-                            height: 28
-
-                        Label:
-                            id: source_path_status
-                            text: 'Pasta de origem: Não selecionada'
-                            font_size: 16
-                            color: .6, .6, .6, 1
-                            halign: 'left'
-                            text_size: self.size
-                            size_hint_y: None
-                            height: 28
-
-                        Label:
-                            id: dest_path_status
-                            text: 'Pasta de destino: Não selecionada'
                             font_size: 16
                             color: .6, .6, .6, 1
                             halign: 'left'
@@ -326,15 +327,6 @@
                 Widget:
                     size_hint_y: 1
 
-                Label:
-                    text: 'Concluída'
-                    font_size: 14
-                    color: .6, .6, .6, 1
-                    halign: 'center'
-                    size_hint_y: None
-                    height: 22
-                    text_size: self.size
-
         # bottom area with styled CTA button aligned to right
         BoxLayout:
             orientation: 'horizontal'
@@ -375,14 +367,10 @@
                     background_down: ''
                     background_color: 0, 0, 0, 0
                     color: 1, 1, 1, 1
-                    disabled: True
-                    opacity: 0.5 if self.disabled else 1
                     on_press: root.go_to_software_selection()
                     canvas.before:
                         Color:
-                            rgba: (.09, .49, .85, 1) if not self.disabled else (.5, .5, .5, 1)
+                            rgba: .09, .49, .85, 1
                         RoundedRectangle:
                             pos: self.pos
                             size: self.size
-                            radius: [26]
-                            on_press: root.start_backup()

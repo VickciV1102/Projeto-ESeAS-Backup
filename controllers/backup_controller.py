@@ -5,6 +5,8 @@ from kivy.lang import Builder
 from utils.backup_facade import BackupFacade
 from utils.backup_observer import BackupObserver
 from abc import ABC
+from utils.backup_session import get_backup_session
+from datetime import datetime
 
 # Para abrir seletor de pastas no Windows
 import tkinter as tk
@@ -48,6 +50,33 @@ class BackupScreen(Screen):
             minutes, seconds = divmod(remainder, 60)
             duration_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
             self.update_status('finish_status', f'Backup finalizado — duração: {duration_str}', True)
+            
+            # Armazena dados na sessão
+            backup_session = get_backup_session()
+            if not backup_session.start_time:
+                backup_session.start_time = datetime.now()
+            
+            # O tamanho vem em bytes do backup_facade
+            total_size_bytes = data.get('total_size', 0)
+            total_size_gb = total_size_bytes / (1024 * 1024 * 1024)  # Converter para GB para exibição
+            
+            backup_session.set_file_backup_data(
+                files=data.get('total_files', 0),
+                size=total_size_bytes,
+                source=self.ids.source_path_input.text,
+                destination=self.ids.destination_path_input.text
+            )
+            
+            print("=" * 50)
+            print("BACKUP DE ARQUIVOS CONCLUÍDO!")
+            print(f"Dados armazenados na sessão:")
+            print(f"  - Arquivos de documentos: {data.get('total_files', 0)}")
+            print(f"  - Tamanho total (GB): {total_size_gb:.2f}")
+            print(f"  - Tamanho total (bytes): {total_size_bytes}")
+            print(f"  - Origem: {self.ids.source_path_input.text}")
+            print(f"  - Destino: {self.ids.destination_path_input.text}")
+            print("=" * 50)
+            
             # Habilita o botão Next quando o backup é concluído
             self.ids.next_button.disabled = False
         elif event_type == "error":

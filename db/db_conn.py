@@ -1,9 +1,10 @@
 import os
 
-from peewee import (SqliteDatabase)
+from peewee import SqliteDatabase
 
 from db.database import db_proxy
 from models.users_model import UserModel
+from models.backup_logs_model import BackupLog
 
 def init_db():
     try:
@@ -18,7 +19,9 @@ def init_db():
 
         db.connect()
         print("Conexão com o banco de dados estabelecida.")
-        db.create_tables([UserModel], safe=True)
+        
+        # Cria as tabelas de usuários e backup logs
+        db.create_tables([UserModel, BackupLog], safe=True)
 
         print("Tabelas 'users' e 'backup_logs' verificadas/criadas com sucesso.")
     except Exception as e:

@@ -11,30 +11,30 @@
 
     BoxLayout:
         orientation: 'vertical'
-        padding: [20, 20, 20, 20]
-        spacing: 15
+        padding: [15, 15, 15, 15]  # Padding reduzido
+        spacing: 10  # Espaçamento reduzido
 
         # Container principal branco com cantos arredondados
         BoxLayout:
             orientation: 'vertical'
-            padding: [30, 30, 30, 30]
-            spacing: 15
+            padding: [20, 20, 20, 20]  # Padding interno reduzido
+            spacing: 10  # Espaçamento reduzido
 
             # Título
             Label:
                 text: 'Transfer Software'
-                font_size: 28
+                font_size: 24  # Tamanho reduzido
                 color: 0.2, 0.2, 0.2, 1
                 size_hint_y: None
-                height: 50
+                height: 40  # Altura reduzida
                 halign: 'left'
                 text_size: self.size
 
             # Container da lista com fundo azul claro
             BoxLayout:
                 orientation: 'vertical'
-                padding: [15, 15, 15, 15]
-                spacing: 10
+                padding: [10, 10, 10, 10]  # Padding reduzido
+                spacing: 5  # Espaçamento reduzido
                 
                 canvas.before:
                     Color:
@@ -47,7 +47,7 @@
                 # Cabeçalho da lista
                 BoxLayout:
                     size_hint_y: None
-                    height: 50
+                    height: 40  # Altura reduzida
                     spacing: 10
                     padding: [5, 0, 15, 0]
 
@@ -78,8 +78,7 @@
                 # Lista de software
                 ScrollView:
                     do_scroll_x: False
-                    size_hint_y: None
-                    height: 400
+                    size_hint_y: 1  # Ocupa todo o espaço disponível
                     bar_width: 10
                     bar_color: 0.7, 0.7, 0.7, 0.9
                     bar_inactive_color: 0.7, 0.7, 0.7, 0.4
@@ -90,7 +89,16 @@
                         orientation: 'vertical'
                         size_hint_y: None
                         height: self.minimum_height
-                        spacing: 8
+                        spacing: 5  # Espaçamento reduzido de 8 para 5
+
+            # Texto informativo
+            Label:
+                text: 'Selecione os softwares que deseja copiar (opcional)'
+                color: 0.5, 0.5, 0.5, 1
+                size_hint_y: None
+                height: 30
+                font_size: 12
+                italic: True
 
         BoxLayout:
             orientation: 'horizontal'

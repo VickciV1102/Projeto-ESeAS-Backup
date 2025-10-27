@@ -132,8 +132,8 @@ class BackupFacade(BackupSubject):
                 "total_size": total_size
             })
             
-            # Log no banco de dados
-            self.log_manager.log_backup_complete(user_id, "Full Backup", duration)
+            # Log no banco de dados - REMOVIDO: o registro é feito no transfer_software_controller
+            # self.log_manager.log_backup_complete(user_id, "Full Backup", duration)
             
             return True
         except Exception as e:
@@ -152,17 +152,6 @@ class BackupFacade(BackupSubject):
             return False
         finally:
             self.is_backup_running = False
-
-            duration = time.time() - start_time
-            self.log_manager.log_backup_complete(user_id, "Full Backup", duration)
-
-            self._notify_observers("backup_completed", {
-                "progress": 100, 
-                "message": "Backup concluído com sucesso!",
-                "duration": duration
-            })
-
-            return True
     
     def execute_quick_backup(self, user_id: int, source_paths: List[str], destination_path: str) -> bool:
         try:
@@ -258,4 +247,3 @@ class BackupFacade(BackupSubject):
         origem_caminho = backupconfig.get('origem_caminho')
         destino_nome = backupconfig.get('destino_nome')
         destino_caminho = backupconfig.get('destino_caminho')
-        # Adicione as operações de backup usando esses dados...

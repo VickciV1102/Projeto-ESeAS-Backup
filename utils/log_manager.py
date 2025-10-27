@@ -4,6 +4,7 @@ import os
 
 from datetime import datetime
 from typing import Optional
+from models.backup_logs_model import BackupLog
 
 class LogManager:
     _instance: Optional['LogManager'] = None
@@ -50,27 +51,59 @@ class LogManager:
             self.logger.addHandler(console_handler)
 
     def log_info(self, message: str):
-        formatted_message = f"[User: {user_id}] {message}" if user_id else message
-        self.logger.info(formatted_message)
+        """Log de informação"""
+        self.logger.info(message)
+        print(f"[INFO] {message}")
 
     def log_error(self, message: str, exception: Optional[Exception] = None):
+        """Log de erro"""
         formatted_message = message
         if exception:
             formatted_message += f" - Exception: {str(exception)}"
         self.logger.error(formatted_message)
+        print(f"[ERROR] {formatted_message}")
 
     def log_warning(self, message: str):
-        formatted_message = f"[User: {user_id}] {message}" if user_id else message
-        self.logger.warning(formatted_message)
+        """Log de aviso"""
+        self.logger.warning(message)
+        print(f"[WARNING] {message}")
 
     def log_backup_start(self, backup_type: str):
-        self.log_info(f"Backup iniciado - Tipo: {backup_type}", user_id)
+        """Registra o início de um backup"""
+        self.log_info(f"Backup iniciado - Tipo: {backup_type}")
 
-    def log_backup_complete(self, backup_type: str, duration: float):
-        self.log_info(f"Backup concluído - Tipo: {backup_type} - Duração: {duration:.2f}s", user_id)
-
-    def log_backup_error(self, backup_type: str, error: str):
-        self.log_error(f"Erro no backup - Tipo: {backup_type} - Erro: {error}", user_id)
+    def log_backup_complete(self, user_id, backup_type, duration, **kwargs):
+        """Registra um backup completo com todos os detalhes"""
+        try:
+            BackupLog.create(
+                user_id=user_id,
+                backup_type=backup_type,
+                ticket_number=kwargs.get('ticket_number', None),
+                duration=duration,
+                end_time=datetime.now(),
+                source_path=kwargs.get('source_path', ''),
+                destination_path=kwargs.get('destination_path', ''),
+                total_size=kwargs.get('total_size', 0),
+                total_files=kwargs.get('total_files', 0),
+                copied_files=kwargs.get('copied_files', 0),
+                status=kwargs.get('status', 'Concluído')
+            )
+            self.log_info(f"Backup registrado: {backup_type}")
+        except Exception as e:
+            self.log_error(f"Erro ao registrar backup: {str(e)}", e)
+    
+    def log_backup_error(self, user_id, backup_type, error_message):
+        """Registra um erro de backup"""
+        try:
+            BackupLog.create(
+                user_id=user_id,
+                backup_type=backup_type,
+                status=f'Erro: {error_message}',
+                end_time=datetime.now()
+            )
+            self.log_error(f"Erro no backup {backup_type}: {error_message}")
+        except Exception as e:
+            self.log_error(f"Erro ao registrar erro de backup: {str(e)}", e)
 
 def get_log_manager() -> LogManager:
     return LogManager()

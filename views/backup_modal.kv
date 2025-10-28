@@ -1,0 +1,106 @@
+<TicketNumberModal@ModalView>:
+    size_hint: None, None
+    size: 450, 300
+    auto_dismiss: False
+    background: ''
+    background_color: 0, 0, 0, 0.5
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 0
+        spacing: 0
+        
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [16,]
+        
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 30, 30, 30, 20
+            spacing: 20
+            
+            Label:
+                text: 'Número do Chamado'
+                font_size: '22sp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                size_hint_y: None
+                height: 40
+                halign: 'center'
+            
+            Label:
+                text: 'Digite o número do chamado (6 dígitos)'
+                font_size: '14sp'
+                color: 0.4, 0.4, 0.4, 1
+                size_hint_y: None
+                height: 30
+                halign: 'center'
+            
+            TextInput:
+                id: ticket_input
+                hint_text: 'Ex: 123456'
+                multiline: False
+                font_size: '16sp'
+                size_hint_y: None
+                height: 48
+                padding: 15, 12
+                input_filter: 'int'
+                foreground_color: 0.1, 0.1, 0.1, 1
+                hint_text_color: 0.6, 0.6, 0.6, 1
+                background_color: 0.95, 0.95, 0.95, 1
+                cursor_color: 34/255, 102/255, 204/255, 1
+                canvas.before:
+                    Color:
+                        rgba: 0.85, 0.85, 0.85, 1
+                    Line:
+                        rounded_rectangle: self.x, self.y, self.width, self.height, 8
+                        width: 1.5
+            
+            Label:
+                id: error_label
+                text: ''
+                font_size: '13sp'
+                color: 1, 0.2, 0.2, 1
+                size_hint_y: None
+                height: 25
+                halign: 'center'
+            
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 15
+                size_hint_y: None
+                height: 48
+                
+                Button:
+                    text: 'Cancelar'
+                    background_normal: ''
+                    background_color: 0.9, 0.9, 0.9, 1
+                    color: 0.3, 0.3, 0.3, 1
+                    font_size: '16sp'
+                    on_press: root.dismiss()
+                    canvas.before:
+                        Color:
+                            rgba: 0.9, 0.9, 0.9, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10,]
+                
+                Button:
+                    text: 'Confirmar'
+                    background_normal: ''
+                    background_color: 34/255, 102/255, 204/255, 1
+                    color: 1, 1, 1, 1
+                    font_size: '16sp'
+                    on_press: root.confirm_ticket()
+                    canvas.before:
+                        Color:
+                            rgba: 34/255, 102/255, 204/255, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10,]

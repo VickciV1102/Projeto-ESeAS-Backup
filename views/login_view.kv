@@ -44,6 +44,7 @@
                 id: login_input
                 hint_text: 'Login'
                 multiline: False
+                write_tab: False
                 size_hint_y: None
                 height: 44
                 font_size: '16sp'
@@ -61,6 +62,7 @@
                 id: password_input
                 hint_text: 'Senha'
                 multiline: False
+                write_tab: False
                 password: True
                 size_hint_y: None
                 height: 44
@@ -91,6 +93,15 @@
                         size: self.size
                         radius: [12,]
                 on_press: root.do_login(login_input.text, password_input.text)
+
+            Label:
+                id: error_label
+                text: ''
+                font_size: '13sp'
+                color: 1, 0.2, 0.2, 1
+                size_hint_y: None
+                height: 25
+                halign: 'center'
 
         Widget:
             size_hint_y: 0.2

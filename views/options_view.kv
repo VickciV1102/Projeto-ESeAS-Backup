@@ -21,56 +21,6 @@
         Widget:
             size_hint_y: 0.13
 
-        # Campo de Número do Chamado
-        BoxLayout:
-            orientation: 'vertical'
-            spacing: 8
-            size_hint: None, None
-            size: 340, 100
-            pos_hint: {'center_x': 0.5}
-            padding: [0, 10, 0, 0]
-
-            Label:
-                text: 'Número do Chamado'
-                size_hint_y: None
-                height: 30
-                font_size: '16sp'
-                color: 0.2, 0.2, 0.2, 1
-                halign: 'left'
-                text_size: self.size
-
-            
-            TextInput:
-                id: ticket_input
-                hint_text: 'Digite 6 dígitos'
-                multiline: False
-                input_filter: 'int'
-                size_hint_y: None
-                height: 44
-                font_size: '16sp'
-                padding: [10, 10]
-                background_color: (1, 1, 1, 0)
-                foreground_color: (0.2, 0.2, 0.2, 1)
-                cursor_color: (34/255, 102/255, 204/255, 1)
-                on_text: self.text = self.text[:6]
-
-                canvas.after:
-                    Color:
-                        rgba: (0.7, 0.7, 0.7, 1)
-                    Line:
-                        width: 1.2
-                        rectangle: self.x, self.y, self.width, self.height
-                        
-            Label:
-                id: ticket_error
-                text: ''
-                size_hint_y: None
-                height: 20
-                font_size: '13sp'
-                color: 1, 0.2, 0.2, 1
-                halign: 'left'
-                text_size: self.size
-
         BoxLayout:
             orientation: 'vertical'
             spacing: 18

@@ -51,12 +51,10 @@ class LogManager:
             self.logger.addHandler(console_handler)
 
     def log_info(self, message: str):
-        """Log de informação"""
         self.logger.info(message)
         print(f"[INFO] {message}")
 
     def log_error(self, message: str, exception: Optional[Exception] = None):
-        """Log de erro"""
         formatted_message = message
         if exception:
             formatted_message += f" - Exception: {str(exception)}"
@@ -64,7 +62,6 @@ class LogManager:
         print(f"[ERROR] {formatted_message}")
 
     def log_warning(self, message: str):
-        """Log de aviso"""
         self.logger.warning(message)
         print(f"[WARNING] {message}")
 

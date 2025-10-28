@@ -1,6 +1,6 @@
 #:kivy 2.3.0
 
-<BackupHistoryScreen>:
+<BackupHistoryScreenController@Screen>:
     name: "backup_history_screen"
     canvas.before:
         Color:
@@ -173,19 +173,24 @@
                         height: self.minimum_height
                         spacing: 1
 
-        # Botão finish
-        AnchorLayout:
-            anchor_x: 'right'
-            anchor_y: 'center'
+        # Botões
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: 15
             size_hint_y: None
             height: 60
+            padding: [0, 0, 0, 0]
+
+            Widget:
+                size_hint_x: 1
 
             Button:
-                text: 'finish'
+                id: main_menu_button
+                text: 'Menu Principal'
                 size_hint: None, None
-                size: 120, 45
+                size: 140, 45
                 background_normal: ''
-                background_color: 0.09, 0.47, 0.95, 1
+                background_color: 0.6, 0.6, 0.6, 1
                 color: 1, 1, 1, 1
                 font_size: 16
-                on_press: root.finish()
+                on_press: root.go_to_main_menu()

@@ -1,6 +1,6 @@
 #:kivy 2.3.0
 
-<BackupScreen@Screen>:
+<BackupScreenController@Screen>:
     name: "backup_start_screen"
     BoxLayout:
         orientation: 'vertical'
@@ -359,6 +359,7 @@
                             
                 Button:
                     id: next_button
+                    disabled: True
                     text: 'Next'
                     size_hint: None, None
                     size: 120, 52

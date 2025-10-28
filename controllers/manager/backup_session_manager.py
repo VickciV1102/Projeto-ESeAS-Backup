@@ -1,6 +1,7 @@
-class BackupSession:
+class BackupSessionManager:
     _instance = None
     
+    # Singleton para gerenciamento de sessão de backup
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -15,8 +16,6 @@ class BackupSession:
     
     def reset(self):
         """Reseta a sessão de backup"""
-        self.user_id = None
-        self.user_name = None
         self.backup_id = None
         self.ticket_number = None  # Número do chamado
         self.start_time = None
@@ -32,11 +31,6 @@ class BackupSession:
         self.software_backup_files = 0
         self.software_backup_size = 0
         self.software_destination_path = None
-    
-    def set_user(self, user_id, user_name):
-        """Define o usuário autenticado"""
-        self.user_id = user_id
-        self.user_name = user_name
     
     def set_ticket_number(self, ticket_number):
         """Define o número do chamado"""
@@ -68,8 +62,6 @@ class BackupSession:
     def get_summary(self):
         """Retorna um resumo da sessão"""
         return {
-            'user_id': self.user_id,
-            'user_name': self.user_name,
             'backup_id': self.backup_id,
             'ticket_number': self.ticket_number,
             'start_time': self.start_time,
@@ -85,4 +77,4 @@ class BackupSession:
         }
 
 def get_backup_session():
-    return BackupSession()
+    return BackupSessionManager()

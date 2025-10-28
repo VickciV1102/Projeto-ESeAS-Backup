@@ -19,12 +19,7 @@ class BackupHistoryScreenController(Screen):
         self.user_session = UserSessionManager()
 
     def on_enter(self):
-        """Carrega os registros quando a tela é exibida"""
-        
-        previous_screen = self.manager.previous()
-        
-        print(previous_screen)
-        
+        """Carrega os registros quando a tela é exibida"""        
         self.load_backup_records()
 
     def load_backup_records(self):
